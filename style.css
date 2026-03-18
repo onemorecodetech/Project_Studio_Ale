@@ -361,3 +361,44 @@ background-attachment:scroll;
 }
 
 }
+/* ================= MENU MOBILE ================= */
+
+.menu-toggle{
+    display: none;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 768px){
+
+    .menu-toggle{
+        display: block;
+    }
+
+    .menu-links{
+        position: absolute;
+        top: 100%;
+        right: 10px;
+
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+
+        flex-direction: column;
+        padding: 15px;
+        gap: 10px;
+
+        border-radius: 10px;
+
+        display: none;
+    }
+
+    .menu-links.active{
+        display: flex;
+    }
+
+    .menu-links li a{
+        color: #ff1493;
+    }
+}

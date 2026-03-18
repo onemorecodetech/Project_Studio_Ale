@@ -7,20 +7,30 @@
 </head>
 <body>
 
+
 <header>
-    <nav class="menu">
-        
+    <div class="menu">
+
         <div class="logo">
-            <img src="./imagens/Estilo_logo.png" alt="Studio Alessandra">
+            <a href="index.html">
+                <img src="./imagens/Estilo_logo.png" alt="Studio Alessandra">
+            </a>
         </div>
-        <ul class="menu-links">
+
+        
+        <div class="menu-toggle" onclick="toggleMenu()">
+            ☰
+        </div>
+
+        
+        <ul class="menu-links" id="menuLinks">
             <li><a href="index.html">Início</a></li>
             <li><a href="servicos.html">Serviços</a></li>
             <li><a href="agendamento.html">Agendamento</a></li>
             <li><a href="sobre.html">Sobre</a></li>
-            
         </ul>
-    </nav>
+
+    </div>
 </header>
 
 <div class="container">
@@ -64,6 +74,11 @@
     </p>
 </footer>
 
-
+    <script>
+        function toggleMenu(){
+        const menu = document.getElementById("menuLinks");
+        menu.classList.toggle("active");
+    }
+    </script>
 </body>
 </html>
