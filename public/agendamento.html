@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento – Studio Alessandra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="menu">
+      <div class="logo"><a href="/"><img src="/imagens/Estilo_logo.png" alt="Studio Alessandra"></a></div>
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+      <ul class="menu-links" id="menuLinks">
+        <li><a href="/">Início</a></li>
+        <li><a href="/servicos.html">Serviços</a></li>
+        <li><a href="/agendamento.html">Agendamento</a></li>
+        <li><a href="/sobre.html">Sobre</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Agende Seu Horário 💕</h1>
+    <p>Escolha a melhor forma de entrar em contato e marcar seu horário:</p>
+    <div id="botoes-agendamento" style="margin-top:20px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center"></div>
+
+    <div id="horarios-atendimento" style="margin-top:30px;text-align:left"></div>
+  </div>
+
+  <footer class="footer">
+    <p>Siga o Studio Alessandra</p>
+    <div class="redes-sociais" id="redes-sociais"></div>
+    <p class="copy">© 2026 Studio Alessandra</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('menuLinks').classList.toggle('active');
+    }
+
+    const DIAS = { segunda:'Segunda', terca:'Terça', quarta:'Quarta', quinta:'Quinta', sexta:'Sexta', sabado:'Sábado', domingo:'Domingo' };
+
+    fetch('/api/dados').then(r => r.json()).then(data => {
+      document.getElementById('redes-sociais').innerHTML = `
+        <a href="${data.contato.instagram}" target="_blank">Instagram</a>
+        <a href="https://wa.me/${data.contato.whatsapp}" target="_blank">WhatsApp</a>
+        <a href="${data.contato.agendamento}" target="_blank">Agendamento</a>
+      `;
+
+      document.getElementById('botoes-agendamento').innerHTML = `
+        <a class="btn-agendar" href="${data.contato.agendamento}" target="_blank">📅 Marcar agendamento</a>
+        <a class="btn-agendar" href="https://wa.me/${data.contato.whatsapp}" target="_blank" style="background:linear-gradient(90deg,#25d366,#128c7e)">💬 WhatsApp</a>
+      `;
+
+      const diasAtivos = Object.entries(data.horarios).filter(([,v]) => v.ativo);
+      if (diasAtivos.length) {
+        document.getElementById('horarios-atendimento').innerHTML =
+          `<h2 style="color:#ff1493;margin-bottom:12px">⏰ Horários de atendimento</h2>` +
+          diasAtivos.map(([d, v]) =>
+            `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5c6d8">
+              <span style="font-weight:500">${DIAS[d]}</span>
+              <span style="color:#555">${v.abertura} – ${v.fechamento}</span>
+            </div>`
+          ).join('');
+      }
+    });
+  </script>
+</body>
+</html>
