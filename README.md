@@ -25,7 +25,7 @@ node server.js
 ## Login padrão do painel
 
 - **Usuário:** `alessandra`
-- **Senha:** `studio2024`
+- **Senha:** `Studio2026`
 
 > ⚠️ Altere a senha após o primeiro acesso pelo menu "Senha" do painel!
 
