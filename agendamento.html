@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="PT-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Agendamentos - Studio Ale Nails</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+<header>
+    <div class="menu">
+
+        <div class="logo">
+            <a href="index.html">
+                <img src="./imagens/Estilo_logo.png" alt="Studio Alessandra">
+            </a>
+        </div>
+
+        
+        <div class="menu-toggle" onclick="toggleMenu()">
+            ☰
+        </div>
+
+        
+        <ul class="menu-links" id="menuLinks">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="servicos.html">Serviços</a></li>
+            <li><a href="agendamento.html">Agendamento</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+        </ul>
+
+    </div>
+</header>
+
+<div class="container">
+    <h1>Agende Seu Horário 💕</h1>
+    <p>Escolha o procedimento desejado:</p>
+
+    <div class="agendamento-opcoes">
+
+        <a class="btn-agendar"
+           href="https://bit.ly/4bIIj30"
+           target="_blank">
+           Marcar agendamento!
+        </a>
+      
+
+        
+      
+</div>
+
+    <footer class="footer">
+    <p>Siga o Studio Alessandra</p>
+
+    <div class="redes-sociais">
+
+        <a href="https://www.instagram.com/studioalenailss/?hl=en" target="_blank">
+            Instagram
+        </a>
+
+        <a href="https://wa.me/55SEUNUMERO" target="_blank">
+            WhatsApp
+        </a>
+
+        <a href="https://bit.ly/4bIIj30" target="_blank">
+            Agendamento
+        </a>
+
+    </div>
+
+    <p class="copy">
+        © 2026 Studio Alessandra
+    </p>
+</footer>
+
+    <script>
+        function toggleMenu(){
+        const menu = document.getElementById("menuLinks");
+        menu.classList.toggle("active");
+    }
+    </script>
+</body>
+</html>
