@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin – Studio Alessandra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #ff1493 0%, #ff4da6 50%, #ffb6d2 100%);
+    }
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 50px 44px;
+      width: min(90%, 420px);
+      box-shadow: 0 24px 60px rgba(255,20,147,0.3);
+      text-align: center;
+    }
+    .logo { width: 90px; border-radius: 14px; margin-bottom: 20px; }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: #ff1493; font-size: 1.8rem; margin-bottom: 6px;
+    }
+    p { color: #888; font-size: .95rem; margin-bottom: 28px; }
+    label { display: block; text-align: left; font-size: .85rem; font-weight: 500; color: #555; margin-bottom: 6px; }
+    input[type=text], input[type=password] {
+      width: 100%; padding: 14px 16px;
+      border: 1.5px solid #f0c0d5; border-radius: 12px;
+      font-size: 1rem; font-family: inherit;
+      margin-bottom: 18px; outline: none;
+      transition: border .2s;
+    }
+    input:focus { border-color: #ff1493; }
+    button {
+      width: 100%; padding: 15px;
+      background: linear-gradient(90deg, #ff1493, #ff4da6);
+      color: white; border: none; border-radius: 40px;
+      font-size: 1rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 8px 20px rgba(255,20,147,0.3);
+    }
+    button:hover { transform: scale(1.02); box-shadow: 0 12px 28px rgba(255,20,147,0.4); }
+    .erro { color: #e53935; font-size: .9rem; margin-top: 12px; min-height: 20px; }
+    .volta { margin-top: 20px; display: block; color: #aaa; font-size: .85rem; text-decoration: none; }
+    .volta:hover { color: #ff1493; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="/imagens/Estilo_logo.png" alt="Logo">
+    <h1>Painel Admin</h1>
+    <p>Studio Alessandra</p>
+
+    <div>
+      <label>Usuário</label>
+      <input type="text" id="usuario" placeholder="seu usuário" autocomplete="username">
+      <label>Senha</label>
+      <input type="password" id="senha" placeholder="••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter') entrar()">
+      <button onclick="entrar()">Entrar</button>
+      <div class="erro" id="erro"></div>
+    </div>
+
+    <a class="volta" href="/">← Voltar ao site</a>
+  </div>
+
+  <script>
+    // Se já logado, redireciona
+    fetch('/api/sessao').then(r => r.json()).then(d => {
+      if (d.logado) location.href = '/admin';
+    });
+
+    async function entrar() {
+      const usuario = document.getElementById('usuario').value.trim();
+      const senha = document.getElementById('senha').value;
+      const erroEl = document.getElementById('erro');
+      erroEl.textContent = '';
+
+      if (!usuario || !senha) { erroEl.textContent = 'Preencha todos os campos'; return; }
+
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ usuario, senha })
+      });
+
+      if (res.ok) {
+        location.href = '/admin';
+      } else {
+        erroEl.textContent = 'Usuário ou senha incorretos';
+        document.getElementById('senha').value = '';
+      }
+    }
+  </script>
+</body>
+</html>

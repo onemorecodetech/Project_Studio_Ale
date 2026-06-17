@@ -1,0 +1,139 @@
+{
+  "servicos": [
+    {
+      "id": 1,
+      "nome": "Alongamento em gel na tips",
+      "preco": "180,00",
+      "descricao": "Realce sua beleza com o alongamento em gel, é a escolha perfeita para quem deseja unhas mais longas, fortes e impecáveis, unindo praticidade e elegância.",
+      "foto": "/imagens/Alongamento_em_gel_tips.jpeg",
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "nome": "Manutenção do alongamento",
+      "preco": "100,00",
+      "descricao": "A manutenção do alongamento é indicada ser feita a cada 15 a 25 dias!",
+      "foto": "/imagens/Manutencao_alongamento.jpeg",
+      "ativo": true
+    },
+    {
+      "id": 3,
+      "nome": "Manutenção vinda por outra profissional",
+      "preco": "120,00",
+      "descricao": "Para garantir a qualidade e saúde das suas unhas, é necessário enviar uma foto antes para avaliação. Assim consigo analisar o estado do alongamento e oferecer o melhor resultado possível.",
+      "foto": "/imagens/Manutencao_feita_por_outra_profissional.jpeg",
+      "ativo": true
+    },
+    {
+      "id": 4,
+      "nome": "Banho em gel",
+      "preco": "110,00",
+      "descricao": "No banho em gel é aplicado uma fina camada de gel que protege, fortalece e dá mais resistência às unhas naturais, mantendo-as bonitas por muito mais tempo!",
+      "foto": "/imagens/banho_em_gel.jpeg",
+      "ativo": true
+    },
+    {
+      "id": 5,
+      "nome": "Manutenção banho em gel",
+      "preco": "90,00",
+      "descricao": "Manutenção do banho em gel é feita a cada 15 a 25 dias, garantindo que suas unhas mantenham o brilho e durabilidade ideais.",
+      "foto": "/imagens/manutencao_banho_em_gel.jpeg",
+      "ativo": true
+    },
+    {
+      "id": 6,
+      "nome": "Blindagem",
+      "preco": "90,00",
+      "descricao": "A blindagem oferece proteção e força para unhas mais saudáveis e bonitas, criando uma camada protetora que fortalece e proporcionando um brilho duradouro!",
+      "foto": "/imagens/Blindagem.jpeg",
+      "ativo": true
+    },
+    {
+      "id": 7,
+      "nome": "Esmaltação em gel",
+      "preco": "80,00",
+      "descricao": "Nossa esmaltação em gel oferece unhas sempre perfeitas, com brilho intenso e durabilidade que suas unhas merecem todos os dias!",
+      "foto": "/imagens/esmaltacao_banho_em_gel.jpeg",
+      "ativo": true
+    },
+    {
+      "id": 8,
+      "nome": "Remoção do alongamento",
+      "preco": "80,00",
+      "descricao": "Removemos o alongamento de forma segura e sem danificar suas unhas naturais, garantindo que elas fiquem saudáveis e prontas para o próximo alongamento.",
+      "foto": "/imagens/remocao_alongamento.jpeg",
+      "ativo": true
+    },
+    {
+      "id": 9,
+      "nome": "Reposição de unha",
+      "preco": "10,00",
+      "descricao": "Refazemos a unha quebrada ou danificada, restaurando a beleza e integridade das suas unhas para que fiquem perfeitas novamente.",
+      "foto": "/imagens/reposicao_de_unha.jpeg",
+      "ativo": true
+    },
+    {
+      "id": 10,
+      "nome": "Unha em 4D",
+      "preco": "30,00 por par",
+      "descricao": "As unhas em 4D é uma verdadeira escultura em miniatura, perfeita para quem ama exclusividade e deseja transformar as unhas em arte!",
+      "foto": "/imagens/unha_4d.jpeg",
+      "ativo": true
+    },
+    {
+      "id": 11,
+      "nome": "Nail art",
+      "preco": "5,00 a 10,00 por par",
+      "descricao": "A nail art é um desenho feito na unha, que deixa suas mãos ainda mais lindas e personalizadas. O valor depende do tipo de decoração escolhida.",
+      "foto": "/imagens/Nail.jpeg",
+      "ativo": true
+    }
+  ],
+  "horarios": {
+    "segunda": {
+      "ativo": true,
+      "abertura": "14:00",
+      "fechamento": "20:00"
+    },
+    "terca": {
+      "ativo": true,
+      "abertura": "08:00",
+      "fechamento": "20:00"
+    },
+    "quarta": {
+      "ativo": true,
+      "abertura": "08:00",
+      "fechamento": "20:00"
+    },
+    "quinta": {
+      "ativo": true,
+      "abertura": "08:00",
+      "fechamento": "20:00"
+    },
+    "sexta": {
+      "ativo": true,
+      "abertura": "14:00",
+      "fechamento": "20:00"
+    },
+    "sabado": {
+      "ativo": true,
+      "abertura": "08:00",
+      "fechamento": "17:00"
+    },
+    "domingo": {
+      "ativo": false,
+      "abertura": "",
+      "fechamento": ""
+    }
+  },
+  "promocoes": [],
+  "contato": {
+    "instagram": "https://www.instagram.com/studioalenailss/?hl=en",
+    "whatsapp": "5554996186763",
+    "agendamento": "bit.ly/4bIIj30"
+  },
+  "admin": {
+    "usuario": "alessandra",
+    "senha": "Studio2026"
+  }
+}
