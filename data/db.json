@@ -75,7 +75,7 @@
   ],
   "horarios": {
     "terca": {
-      "ativo": false,
+      "ativo": true,
       "abertura": "08:00",
       "fechamento": "20:00"
     },
