@@ -38,7 +38,7 @@ const autenticado = rota(async (req, res, next) => {
 function senhaConfere(db, senha) {
   if (db.admin?.hash) return auth.conferirHash(senha, db.admin.hash);
   if (process.env.ADMIN_PASSWORD) return auth.iguais(senha, process.env.ADMIN_PASSWORD);
-  if (!ON_VERCEL) return auth.iguais(senha, 'Studio2026'); // padrão só para testes locais
+  if (!ON_VERCEL) return auth.iguais(senha, 'badgirls2026'); // padrão só para testes locais
   return false;
 }
 
