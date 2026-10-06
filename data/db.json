@@ -73,11 +73,6 @@
       "ativo": true
     },  ],
   "horarios": {
-    "segunda": {
-      "ativo": true,
-      "abertura": "14:00",
-      "fechamento": "20:00"
-    },
     "terca": {
       "ativo": false,
       "abertura": "08:00",
