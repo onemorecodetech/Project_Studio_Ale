@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/favicon.png">
   <title>Painel Admin – Studio Alessandra</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --pink: #ff1493; --pink-light: #ff4da6;
-      --bg: #fff5fa; --card: #ffffff;
-      --border: #f8d7e8; --text: #333; --muted: #888;
+      --pink: #c84b70; --pink-light: #e07a95;
+      --bg: #fbf0f3; --card: #ffffff;
+      --border: #f4cbd6; --text: #333; --muted: #888;
       --font: 'DM Sans', sans-serif;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -22,10 +24,10 @@
       padding: 0 28px; height: 64px;
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
-      box-shadow: 0 2px 12px rgba(255,20,147,0.08);
+      box-shadow: 0 2px 12px rgba(200,75,112,0.08);
     }
     .topbar-left { display: flex; align-items: center; gap: 14px; }
-    .topbar-left img { height: 40px; border-radius: 8px; }
+    .topbar-left img { height: 40px; width: auto; }
     .topbar-left h1 { font-family: 'Playfair Display', serif; color: var(--pink); font-size: 1.3rem; }
     .topbar-right { display: flex; align-items: center; gap: 14px; }
     .btn-site { text-decoration: none; color: var(--muted); font-size: .9rem; }
@@ -105,7 +107,7 @@
     }
     .btn-primary {
       background: linear-gradient(90deg, var(--pink), var(--pink-light));
-      color: white; box-shadow: 0 4px 14px rgba(255,20,147,.25);
+      color: white; box-shadow: 0 4px 14px rgba(200,75,112,.25);
     }
     .btn-primary:hover { transform: scale(1.03); }
     .btn-ghost {
@@ -184,11 +186,11 @@
 
 <div class="topbar">
   <div class="topbar-left">
-    <img src="/imagens/Estilo_logo.png" alt="Logo">
+    <img src="/imagens/logo.png" alt="Studio Alessandra">
     <h1>Painel Administrativo</h1>
   </div>
   <div class="topbar-right">
-    <a href="/" target="_blank" class="btn-site">↗ Ver site</a>
+    <a href="/" target="_blank" rel="noopener" class="btn-site" id="link-site">↗ Ver site</a>
     <button class="btn-sair" onclick="sair()">Sair</button>
   </div>
 </div>
@@ -326,14 +328,55 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ── Endereços: no subdomínio admin.studioale.com.br usa /painel e /login ──
+const NO_SUBDOMINIO = location.hostname.startsWith('admin.');
+const LOGIN = NO_SUBDOMINIO ? '/login' : '/admin/login';
+if (NO_SUBDOMINIO) document.getElementById('link-site').href = 'https://' + location.hostname.replace(/^admin\./, '');
+
+// Chamada à API: se der erro, mostra a mensagem e interrompe a ação
+async function api(url, opcoes) {
+  let res;
+  try {
+    res = await fetch(url, opcoes);
+  } catch {
+    toast('Sem conexão. Verifique a internet e tente de novo.', 'error');
+    throw new Error('rede');
+  }
+  if (res.status === 401) { location.href = LOGIN; throw new Error('401'); }
+  if (!res.ok) {
+    let msg = 'Não foi possível salvar. Tente de novo.';
+    try { msg = (await res.json()).erro || msg; } catch {}
+    toast(msg, 'error');
+    throw new Error(msg);
+  }
+  return res;
+}
+
+// Reduz a foto no navegador antes de enviar (mais rápido e dentro do limite da Vercel)
+function comprimirImagem(arquivo, max = 1600, qualidade = 0.85) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const escala = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * escala);
+      canvas.height = Math.round(img.height * escala);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => resolve(blob || arquivo), 'image/jpeg', qualidade);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = () => resolve(arquivo);
+    img.src = URL.createObjectURL(arquivo);
+  });
+}
 // ── Auth check ────────────────────────────────────────────
 fetch('/api/sessao').then(r => r.json()).then(d => {
-  if (!d.logado) location.href = '/admin/login';
+  if (!d.logado) location.href = LOGIN;
   else carregarTudo();
 });
 
 function sair() {
-  fetch('/api/logout', { method: 'POST' }).then(() => location.href = '/admin/login');
+  fetch('/api/logout', { method: 'POST' }).then(() => location.href = LOGIN);
 }
 
 // ── Navegação ─────────────────────────────────────────────
@@ -364,7 +407,7 @@ function carregarTudo() {
 let servicosData = [];
 
 async function carregarServicos() {
-  const res = await fetch('/api/admin/servicos');
+  const res = await api('/api/admin/servicos');
   servicosData = await res.json();
   renderServicos();
 }
@@ -373,7 +416,7 @@ function renderServicos() {
   const container = document.getElementById('lista-servicos');
   container.innerHTML = servicosData.map(s => `
     <div class="servico-card">
-      <img src="${s.foto}" alt="${s.nome}" onerror="this.src='/imagens/Estilo_logo.png'">
+      <img src="${s.foto}" alt="${s.nome}" onerror="this.src='/imagens/logo.png'">
       <div class="servico-body">
         <div class="servico-nome">${s.nome}</div>
         <div class="servico-preco">R$ ${s.preco}</div>
@@ -421,7 +464,7 @@ async function salvarServico() {
   };
 
   // Salvar dados de texto
-  await fetch('/api/admin/servicos/' + id, {
+  await api('/api/admin/servicos/' + id, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(dados)
@@ -431,8 +474,9 @@ async function salvarServico() {
   const fotoInput = document.getElementById('edit-foto-input');
   if (fotoInput.files && fotoInput.files[0]) {
     const form = new FormData();
-    form.append('foto', fotoInput.files[0]);
-    await fetch('/api/admin/servicos/' + id + '/foto', { method: 'POST', body: form });
+    const foto = await comprimirImagem(fotoInput.files[0]);
+    form.append('foto', foto, 'foto.jpg');
+    await api('/api/admin/servicos/' + id + '/foto', { method: 'POST', body: form });
   }
 
   fecharModal();
@@ -447,7 +491,7 @@ const DIAS_LABEL = {
 };
 
 async function carregarHorarios() {
-  const res = await fetch('/api/admin/horarios');
+  const res = await api('/api/admin/horarios');
   const h = await res.json();
   const form = document.getElementById('horarios-form');
   form.innerHTML = Object.entries(h).map(([dia, v]) => `
@@ -484,7 +528,7 @@ async function salvarHorarios() {
       fechamento: document.getElementById('fe-' + d).value
     };
   });
-  await fetch('/api/admin/horarios', {
+  await api('/api/admin/horarios', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(horarios)
@@ -494,7 +538,7 @@ async function salvarHorarios() {
 
 // ── PROMOÇÕES ─────────────────────────────────────────────
 async function carregarPromocoes() {
-  const res = await fetch('/api/admin/promocoes');
+  const res = await api('/api/admin/promocoes');
   const promos = await res.json();
   renderPromocoes(promos);
 }
@@ -527,7 +571,7 @@ async function adicionarPromo() {
   const descricao = document.getElementById('promo-desc').value.trim();
   if (!titulo || !descricao) { toast('Preencha título e descrição', 'error'); return; }
 
-  const res = await fetch('/api/admin/promocoes', {
+  const res = await api('/api/admin/promocoes', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ titulo, descricao })
@@ -539,7 +583,7 @@ async function adicionarPromo() {
 }
 
 async function togglePromo(id, ativo) {
-  await fetch('/api/admin/promocoes/' + id, {
+  await api('/api/admin/promocoes/' + id, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ativo })
@@ -550,14 +594,14 @@ async function togglePromo(id, ativo) {
 
 async function excluirPromo(id) {
   if (!confirm('Excluir esta promoção?')) return;
-  await fetch('/api/admin/promocoes/' + id, { method: 'DELETE' });
+  await api('/api/admin/promocoes/' + id, { method: 'DELETE' });
   await carregarPromocoes();
   toast('Promoção excluída');
 }
 
 // ── CONTATO ───────────────────────────────────────────────
 async function carregarContato() {
-  const res = await fetch('/api/admin/contato');
+  const res = await api('/api/admin/contato');
   const c = await res.json();
   document.getElementById('c-instagram').value = c.instagram || '';
   document.getElementById('c-whatsapp').value = c.whatsapp || '';
@@ -570,7 +614,7 @@ async function salvarContato() {
     whatsapp: document.getElementById('c-whatsapp').value.trim(),
     agendamento: document.getElementById('c-agendamento').value.trim()
   };
-  await fetch('/api/admin/contato', {
+  await api('/api/admin/contato', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(contato)
@@ -600,7 +644,9 @@ async function alterarSenha() {
     document.getElementById('senha-nova').value = '';
     document.getElementById('senha-conf').value = '';
   } else {
-    toast('Senha atual incorreta', 'error');
+    let msg = 'Senha atual incorreta';
+    try { msg = (await res.json()).erro || msg; } catch {}
+    toast(msg, 'error');
   }
 }
 

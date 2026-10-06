@@ -1,1 +1,11 @@
-"node_modules/" 
+node_modules/
+.env
+.env*.local
+.vercel
+.DS_Store
+
+# logs
+npm-debug.log*
+
+# fotos enviadas pelo painel quando testado no computador
+public/imagens/servico_*

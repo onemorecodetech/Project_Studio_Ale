@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /painel
+Disallow: /login
+
+Sitemap: https://studioale.com.br/sitemap.xml

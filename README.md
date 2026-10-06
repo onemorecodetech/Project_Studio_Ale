@@ -1,62 +1,47 @@
 # Studio Alessandra — Site + Painel Admin
 
-## Como rodar
+Site público em `studioale.com.br` e painel em `admin.studioale.com.br`, no mesmo projeto e no mesmo deploy da Vercel.
 
-### 1. Instalar dependências
-Abra o terminal dentro desta pasta e execute:
+## Estrutura
+
+```
+├── api/index.js        ← entrada da API na Vercel
+├── server/
+│   ├── app.js          ← rotas da API (público + painel)
+│   ├── store.js        ← dados: Redis na Vercel, data/db.json no computador
+│   └── auth.js         ← login (senha criptografada + cookie assinado)
+├── data/db.json        ← dados iniciais (copiados para o Redis no primeiro acesso)
+├── public/             ← tudo que o navegador acessa
+│   ├── index.html, servicos.html, agendamento.html, sobre.html, 404.html
+│   ├── style.css, script.js
+│   ├── robots.txt, sitemap.xml, favicon.png
+│   ├── imagens/
+│   └── admin/          ← painel (login.html e index.html)
+├── server.js           ← servidor para testar no computador
+└── vercel.json         ← rotas, subdomínio admin e cabeçalhos
+```
+
+## Rodar no computador
+
 ```
 npm install
+npm start
 ```
 
-### 2. Iniciar o servidor
-```
-node server.js
-```
+- Site: http://localhost:3000
+- Painel: http://localhost:3000/admin/login
 
-### 3. Acessar
+Sem configurar nada, o painel salva em `data/db.json` e as fotos em `public/imagens`.
+Para definir usuário e senha locais, copie `.env.example` para `.env.local`.
 
-| O quê | Endereço |
+## Variáveis de ambiente (Vercel)
+
+| Nome | Para que serve |
 |---|---|
-| Site público | http://localhost:3000 |
-| Painel admin | http://localhost:3000/admin/login |
+| `ADMIN_USER` | Usuário do painel |
+| `ADMIN_PASSWORD` | Senha inicial do painel |
+| `SESSION_SECRET` | Texto longo e aleatório para assinar o login |
+| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | Criadas ao conectar o Upstash Redis |
+| `BLOB_READ_WRITE_TOKEN` | Criada ao conectar o Vercel Blob |
 
----
-
-## Login padrão do painel
-
-- **Usuário:** `alessandra`
-- **Senha:** `Studio2026`
-
-> ⚠️ Altere a senha após o primeiro acesso pelo menu "Senha" do painel!
-
----
-
-## O que a Alessandra pode fazer no painel
-
-- **Serviços** — editar nome, preço, descrição, foto e ativar/desativar serviços
-- **Horários** — configurar dias e horários de atendimento
-- **Promoções** — criar, pausar e excluir promoções (aparecem em banner no site)
-- **Contato** — atualizar links do Instagram, WhatsApp e agendamento
-- **Senha** — alterar a senha de acesso ao painel
-
----
-
-## Estrutura de arquivos
-
-```
-studio_alessandra/
-├── server.js          ← servidor Express
-├── package.json
-├── data/
-│   └── db.json        ← banco de dados (editar com cuidado)
-├── public/            ← site público
-│   ├── index.html
-│   ├── servicos.html
-│   ├── agendamento.html
-│   ├── sobre.html
-│   ├── style.css
-│   └── imagens/
-└── admin/             ← painel administrativo
-    ├── login.html
-    └── index.html
-```
+Depois que a senha for trocada pelo painel, ela passa a valer no lugar de `ADMIN_PASSWORD`.

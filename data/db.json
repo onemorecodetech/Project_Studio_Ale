@@ -129,19 +129,7 @@
   "promocoes": [],
   "contato": {
     "instagram": "https://www.instagram.com/studioalenailss/?hl=en",
-<<<<<<< HEAD
     "whatsapp": "5554996186763",
-=======
-    "whatsapp": "55SEUNUMERO",
->>>>>>> 104f1c0dbf633caec1f2ca6f31e81c63d9e2316e
     "agendamento": "bit.ly/4bIIj30"
-  },
-  "admin": {
-    "usuario": "alessandra",
-<<<<<<< HEAD
-    "senha": "Studio2026"
-=======
-    "senha": "studio2026"
->>>>>>> 104f1c0dbf633caec1f2ca6f31e81c63d9e2316e
   }
 }

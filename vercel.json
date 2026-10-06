@@ -1,0 +1,51 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "admin.studioale.com.br" }],
+      "destination": "/painel",
+      "permanent": false
+    },
+    {
+      "source": "/admin/:path*",
+      "has": [{ "type": "host", "value": "studioale.com.br" }],
+      "destination": "https://admin.studioale.com.br/login",
+      "permanent": false
+    },
+    {
+      "source": "/admin/:path*",
+      "has": [{ "type": "host", "value": "www.studioale.com.br" }],
+      "destination": "https://admin.studioale.com.br/login",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.studioale.com.br" }],
+      "destination": "https://studioale.com.br/:path*",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api" },
+    { "source": "/painel", "destination": "/admin/index.html" },
+    { "source": "/login", "destination": "/admin/login.html" },
+    { "source": "/admin", "destination": "/admin/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "admin.studioale.com.br" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/admin/:path*",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/imagens/:path*",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+    }
+  ]
+}
