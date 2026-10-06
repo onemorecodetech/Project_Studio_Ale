@@ -1,6 +1,6 @@
 # Studio Alessandra — Site + Painel Admin
 
-Site público em `studioale.com.br` e painel em `admin.studioale.com.br`, no mesmo projeto e no mesmo deploy da Vercel.
+Site público em `www.studioalenails.com.br` e painel em `admin.studioalenails.com.br`, no mesmo projeto e no mesmo deploy da Vercel.
 
 ## Estrutura
 

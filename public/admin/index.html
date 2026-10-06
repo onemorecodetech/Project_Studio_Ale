@@ -328,10 +328,10 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ── Endereços: no subdomínio admin.studioale.com.br usa /painel e /login ──
+// ── Endereços: no subdomínio admin.studioalenails.com.br usa /painel e /login ──
 const NO_SUBDOMINIO = location.hostname.startsWith('admin.');
 const LOGIN = NO_SUBDOMINIO ? '/login' : '/admin/login';
-if (NO_SUBDOMINIO) document.getElementById('link-site').href = 'https://' + location.hostname.replace(/^admin\./, '');
+if (NO_SUBDOMINIO) document.getElementById('link-site').href = 'https://www.' + location.hostname.replace(/^admin\./, '');
 
 // Chamada à API: se der erro, mostra a mensagem e interrompe a ação
 async function api(url, opcoes) {

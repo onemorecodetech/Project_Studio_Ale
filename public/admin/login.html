@@ -75,7 +75,7 @@
   <script>
     const NO_SUBDOMINIO = location.hostname.startsWith('admin.');
     const PAINEL = NO_SUBDOMINIO ? '/painel' : '/admin';
-    if (NO_SUBDOMINIO) document.getElementById('link-site').href = 'https://' + location.hostname.replace(/^admin\./, '');
+    if (NO_SUBDOMINIO) document.getElementById('link-site').href = 'https://www.' + location.hostname.replace(/^admin\./, '');
 
     // Se já logado, redireciona
     fetch('/api/sessao').then(r => r.json()).then(d => {

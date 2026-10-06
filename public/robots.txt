@@ -5,4 +5,4 @@ Disallow: /api/
 Disallow: /painel
 Disallow: /login
 
-Sitemap: https://studioale.com.br/sitemap.xml
+Sitemap: https://www.studioalenails.com.br/sitemap.xml
