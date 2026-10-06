@@ -71,7 +71,8 @@
       "descricao": "Refazemos a unha quebrada ou danificada, restaurando a beleza e integridade das suas unhas para que fiquem perfeitas novamente.",
       "foto": "/imagens/reposicao_de_unha.jpeg",
       "ativo": true
-    },  ],
+    }  
+  ],
   "horarios": {
     "terca": {
       "ativo": false,
