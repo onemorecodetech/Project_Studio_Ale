@@ -92,7 +92,7 @@
     return `
       <article class="service">
         <div class="service-photo">
-          <img src="${esc(s.foto)}" alt="${esc(s.nome)}" loading="lazy" onerror="this.style.opacity=0">
+          ${s.foto ? `<img src="${esc(s.foto)}" alt="${esc(s.nome)}" loading="lazy" onerror="this.style.opacity=0">` : ''}
         </div>
         <h3>${esc(s.nome)}</h3>
         <div class="price">${esc(preco)}</div>

@@ -66,6 +66,10 @@
     .secao { display: none; }
     .secao.ativa { display: block; }
     .secao-titulo { font-family: 'Playfair Display', serif; color: var(--pink); font-size: 1.6rem; margin-bottom: 24px; }
+    .secao-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+    .servico-acoes { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .servico-acoes .status { font-size: .8rem; font-weight: 600; margin-left: auto; }
+    .sem-foto { width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; background: var(--bg); color: var(--muted); font-size: .85rem; }
 
     /* ── Cards ── */
     .card {
@@ -292,7 +296,10 @@
 
     <!-- ── SERVIÇOS ── -->
     <section class="secao ativa" id="sec-servicos">
-      <div class="secao-titulo">Gerenciar Serviços</div>
+      <div class="secao-topo">
+        <div class="secao-titulo">Gerenciar Serviços</div>
+        <button class="btn btn-primary" onclick="novoServico()">+ Novo serviço</button>
+      </div>
       <div class="servicos-grid" id="lista-servicos">
         <p style="color:#aaa">Carregando...</p>
       </div>
@@ -301,7 +308,7 @@
     <!-- ── Modal Editar Serviço ── -->
     <div id="modal-servico" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center">
       <div class="modal-box" style="background:white;border-radius:20px;padding:32px;width:min(94%,520px);max-height:90vh;overflow-y:auto">
-        <h2 style="font-family:'Playfair Display',serif;color:var(--pink);margin-bottom:20px">Editar Serviço</h2>
+        <h2 id="modal-titulo" style="font-family:'Playfair Display',serif;color:var(--pink);margin-bottom:20px">Editar Serviço</h2>
         <input type="hidden" id="edit-id">
 
         <label>Nome do serviço</label>
@@ -313,7 +320,7 @@
         <label>Descrição</label>
         <textarea id="edit-desc" rows="4"></textarea>
 
-        <label>Foto atual</label>
+        <label id="label-foto">Foto atual</label>
         <div class="foto-upload" onclick="document.getElementById('edit-foto-input').click()">
           <img id="edit-foto-preview" class="foto-preview" src="" alt="">
           <div style="font-size:.85rem;color:var(--muted)">Clique para trocar a foto</div>
@@ -486,28 +493,66 @@ async function carregarServicos() {
   renderServicos();
 }
 
+// Evita que um texto digitado vire código na página
+function esc(v) {
+  return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 function renderServicos() {
   const container = document.getElementById('lista-servicos');
+  if (!servicosData.length) {
+    container.innerHTML = '<p style="color:#aaa">Nenhum serviço cadastrado. Clique em "+ Novo serviço".</p>';
+    return;
+  }
   container.innerHTML = servicosData.map(s => `
     <div class="servico-card">
-      <img src="${s.foto}" alt="${s.nome}" onerror="this.src='/imagens/logo.png'">
+      ${s.foto
+        ? `<img src="${esc(s.foto)}" alt="${esc(s.nome)}" onerror="this.src='/imagens/logo.png'">`
+        : '<div class="sem-foto">Sem foto</div>'}
       <div class="servico-body">
-        <div class="servico-nome">${s.nome}</div>
-        <div class="servico-preco">R$ ${s.preco}</div>
-        <div class="servico-desc">${s.descricao.substring(0,90)}...</div>
-        <div style="display:flex;gap:8px;align-items:center">
+        <div class="servico-nome">${esc(s.nome)}</div>
+        <div class="servico-preco">${s.preco ? 'R$ ' + esc(s.preco) : 'Sem preço'}</div>
+        <div class="servico-desc">${esc((s.descricao || '').substring(0, 90))}${(s.descricao || '').length > 90 ? '...' : ''}</div>
+        <div class="servico-acoes">
           <button class="btn btn-primary btn-sm" onclick="abrirModal(${s.id})">✏️ Editar</button>
-          <span style="font-size:.8rem;color:${s.ativo ? '#2e7d32' : '#c62828'};font-weight:600">
-            ${s.ativo ? '● Ativo' : '○ Oculto'}
-          </span>
+          <button class="btn btn-danger btn-sm" onclick="excluirServico(${s.id})">Excluir</button>
+          <span class="status" style="color:${s.ativo ? '#2e7d32' : '#c62828'}">${s.ativo ? '● Ativo' : '○ Oculto'}</span>
         </div>
       </div>
     </div>
   `).join('');
 }
 
+function novoServico() {
+  document.getElementById('modal-titulo').textContent = 'Novo serviço';
+  document.getElementById('label-foto').textContent = 'Foto do serviço';
+  document.getElementById('edit-id').value = '';
+  document.getElementById('edit-nome').value = '';
+  document.getElementById('edit-preco').value = '';
+  document.getElementById('edit-desc').value = '';
+  document.getElementById('edit-ativo').checked = true;
+  const preview = document.getElementById('edit-foto-preview');
+  preview.removeAttribute('src');
+  preview.style.display = 'none';
+  document.getElementById('edit-foto-input').value = '';
+  document.getElementById('modal-servico').style.display = 'flex';
+  document.getElementById('edit-nome').focus();
+}
+
+async function excluirServico(id) {
+  const s = servicosData.find(x => x.id === id);
+  if (!s) return;
+  if (!confirm(`Excluir o serviço "${s.nome}"? Ele some do site e não dá para desfazer.`)) return;
+  await api('/api/admin/servicos/' + id, { method: 'DELETE' });
+  await carregarServicos();
+  toast('Serviço excluído');
+}
+
 function abrirModal(id) {
   const s = servicosData.find(x => x.id === id);
+  document.getElementById('modal-titulo').textContent = 'Editar Serviço';
+  document.getElementById('label-foto').textContent = 'Foto atual';
+  document.getElementById('edit-foto-preview').style.display = s.foto ? 'block' : 'none';
   document.getElementById('edit-id').value = id;
   document.getElementById('edit-nome').value = s.nome;
   document.getElementById('edit-preco').value = s.preco;
@@ -524,12 +569,15 @@ function fecharModal() {
 
 function previewFoto(input) {
   if (input.files && input.files[0]) {
-    document.getElementById('edit-foto-preview').src = URL.createObjectURL(input.files[0]);
+    const preview = document.getElementById('edit-foto-preview');
+    preview.src = URL.createObjectURL(input.files[0]);
+    preview.style.display = 'block';
   }
 }
 
 async function salvarServico() {
-  const id = parseInt(document.getElementById('edit-id').value);
+  let id = parseInt(document.getElementById('edit-id').value);
+  const novo = !id;
   const dados = {
     nome: document.getElementById('edit-nome').value.trim(),
     preco: document.getElementById('edit-preco').value.trim(),
@@ -537,12 +585,23 @@ async function salvarServico() {
     ativo: document.getElementById('edit-ativo').checked
   };
 
-  // Salvar dados de texto
-  await api('/api/admin/servicos/' + id, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dados)
-  });
+  if (!dados.nome) { toast('Informe o nome do serviço', 'error'); return; }
+
+  // Salvar dados de texto (cria o serviço se for novo)
+  if (novo) {
+    const res = await api('/api/admin/servicos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados)
+    });
+    id = (await res.json()).servico.id;
+  } else {
+    await api('/api/admin/servicos/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados)
+    });
+  }
 
   // Upload de foto se selecionada
   const fotoInput = document.getElementById('edit-foto-input');
@@ -555,7 +614,7 @@ async function salvarServico() {
 
   fecharModal();
   await carregarServicos();
-  toast('Serviço atualizado com sucesso! 💅');
+  toast(novo ? 'Serviço criado! 💅' : 'Serviço atualizado com sucesso! 💅');
 }
 
 // ── HORÁRIOS ──────────────────────────────────────────────

@@ -70,4 +70,19 @@ async function salvarImagem(buffer, nomeArquivo, contentType) {
   return '/imagens/' + nomeArquivo;
 }
 
-module.exports = { lerDB, salvarDB, salvarImagem, StorageError, usandoRedis: !!redis };
+// Apaga a foto de um serviço excluído (só fotos enviadas pelo painel)
+async function apagarImagem(endereco) {
+  if (!endereco) return;
+  try {
+    if (/^https:\/\/.*blob\.vercel-storage\.com\//.test(endereco)) {
+      const { del } = require('@vercel/blob');
+      await del(endereco);
+    } else if (endereco.startsWith('/imagens/servico_') && !ON_VERCEL) {
+      fs.unlinkSync(path.join(IMG_DIR, path.basename(endereco)));
+    }
+  } catch (e) {
+    console.error('Não foi possível apagar a imagem:', e.message);
+  }
+}
+
+module.exports = { lerDB, salvarDB, salvarImagem, apagarImagem, StorageError, usandoRedis: !!redis };

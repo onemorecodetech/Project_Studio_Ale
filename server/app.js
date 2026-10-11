@@ -2,7 +2,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const { lerDB, salvarDB, salvarImagem, StorageError } = require('./store');
+const { lerDB, salvarDB, salvarImagem, apagarImagem, StorageError } = require('./store');
 const auth = require('./auth');
 const { ipDe, registrarTentativa, limparTentativas } = require('./limite');
 
@@ -105,6 +105,35 @@ app.get('/api/dados', rota(async (req, res) => {
 // ── Admin: serviços ───────────────────────────────────────
 app.get('/api/admin/servicos', autenticado, (req, res) => res.json(req.db.servicos));
 
+app.post('/api/admin/servicos', autenticado, rota(async (req, res) => {
+  const db = req.db;
+  const nome = texto(req.body.nome, 120);
+  if (!nome) return res.status(400).json({ erro: 'Informe o nome do serviço' });
+  const id = db.servicos.reduce((maior, s) => Math.max(maior, s.id), 0) + 1;
+  const servico = {
+    id,
+    nome,
+    preco: texto(req.body.preco, 60),
+    descricao: texto(req.body.descricao, 1000),
+    foto: '',
+    ativo: req.body.ativo !== undefined ? !!req.body.ativo : true,
+  };
+  db.servicos.push(servico);
+  await salvarDB(db);
+  res.json({ ok: true, servico });
+}));
+
+app.delete('/api/admin/servicos/:id', autenticado, rota(async (req, res) => {
+  const db = req.db;
+  const id = parseInt(req.params.id, 10);
+  const servico = db.servicos.find((s) => s.id === id);
+  if (!servico) return res.status(404).json({ erro: 'Serviço não encontrado' });
+  db.servicos = db.servicos.filter((s) => s.id !== id);
+  await salvarDB(db);
+  await apagarImagem(servico.foto);
+  res.json({ ok: true });
+}));
+
 app.put('/api/admin/servicos/:id', autenticado, rota(async (req, res) => {
   const db = req.db;
   const id = parseInt(req.params.id, 10);
@@ -129,8 +158,10 @@ app.post('/api/admin/servicos/:id/foto', autenticado, upload.single('foto'), rot
   if (idx === -1) return res.status(404).json({ erro: 'Serviço não encontrado' });
   if (!req.file) return res.status(400).json({ erro: 'Envie uma imagem JPG, PNG ou WEBP' });
   const ext = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' }[req.file.mimetype];
+  const fotoAntiga = db.servicos[idx].foto;
   db.servicos[idx].foto = await salvarImagem(req.file.buffer, `servico_${id}_${Date.now()}${ext}`, req.file.mimetype);
   await salvarDB(db);
+  if (fotoAntiga !== db.servicos[idx].foto) await apagarImagem(fotoAntiga);
   res.json({ ok: true, foto: db.servicos[idx].foto });
 }));
 
