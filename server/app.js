@@ -4,10 +4,24 @@ const multer = require('multer');
 const path = require('path');
 const { lerDB, salvarDB, salvarImagem, StorageError } = require('./store');
 const auth = require('./auth');
+const { ipDe, registrarTentativa, limparTentativas } = require('./limite');
 
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '1mb' }));
+
+// Bloqueia pedidos que alteram dados vindos de outro site (proteção CSRF)
+app.use('/api', (req, res, next) => {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next();
+  const origem = req.headers.origin;
+  if (origem) {
+    let hostOrigem = '';
+    try { hostOrigem = new URL(origem).host; } catch {}
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    if (hostOrigem !== host) return res.status(403).json({ erro: 'Origem não permitida.' });
+  }
+  next();
+});
 
 const ON_VERCEL = !!process.env.VERCEL;
 const ADMIN_USER = process.env.ADMIN_USER || 'alessandra';
@@ -38,8 +52,7 @@ const autenticado = rota(async (req, res, next) => {
 function senhaConfere(db, senha) {
   if (db.admin?.hash) return auth.conferirHash(senha, db.admin.hash);
   if (process.env.ADMIN_PASSWORD) return auth.iguais(senha, process.env.ADMIN_PASSWORD);
-  if (!ON_VERCEL) return auth.iguais(senha, 'Studio2026'); // padrão só para testes locais
-  return false;
+  return false; // sem ADMIN_PASSWORD (Vercel ou .env.local), ninguém entra
 }
 
 app.post('/api/login', rota(async (req, res) => {
@@ -49,9 +62,16 @@ app.post('/api/login', rota(async (req, res) => {
   const usuario = texto(req.body.usuario, 100);
   const senha = String(req.body.senha || '');
   const db = await lerDB();
+  // Máximo de 5 tentativas a cada 15 minutos por aparelho
+  const chave = `login:${ipDe(req)}`;
+  const limite = await registrarTentativa(chave, { maximo: 5, minutos: 15 });
+  if (limite.bloqueado) {
+    return res.status(429).json({ erro: `Muitas tentativas. Aguarde ${limite.restante} minuto(s) e tente de novo.` });
+  }
   if (!auth.iguais(usuario, ADMIN_USER) || !senhaConfere(db, senha)) {
     return res.status(401).json({ erro: 'Usuário ou senha incorretos' });
   }
+  await limparTentativas(chave);
   auth.definirCookie(res, auth.criarToken(db.admin?.versao || 0), req);
   res.json({ ok: true });
 }));

@@ -52,7 +52,7 @@ async function salvarDB(db) {
 }
 
 async function salvarImagem(buffer, nomeArquivo, contentType) {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  if (process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID) {
     const { put } = require('@vercel/blob');
     const blob = await put(`servicos/${nomeArquivo}`, buffer, {
       access: 'public',

@@ -3,128 +3,731 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Studio Alessandra | Alongamento em gel e nail art</title>
-  <meta name="description" content="Alongamento em gel, banho em gel, blindagem e nail art com hora marcada. Veja serviços, valores e horários do Studio Alessandra.">
-  <link rel="canonical" href="https://www.studioalenails.com.br/">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="pt_BR">
-  <meta property="og:site_name" content="Studio Alessandra">
-  <meta property="og:title" content="Studio Alessandra | Alongamento em gel e nail art">
-  <meta property="og:description" content="Alongamento em gel, banho em gel, blindagem e nail art com hora marcada. Veja serviços, valores e horários do Studio Alessandra.">
-  <meta property="og:url" content="https://www.studioalenails.com.br/">
-  <meta property="og:image" content="https://www.studioalenails.com.br/imagens/fundo-unhas.jpg">
-  <meta name="theme-color" content="#fbf0f3">
+  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <title>Painel Admin – Studio Alessandra</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "NailSalon", "name": "Studio Alessandra", "url": "https://www.studioalenails.com.br/", "image": "https://www.studioalenails.com.br/imagens/fundo-unhas.jpg", "logo": "https://www.studioalenails.com.br/imagens/logo.png", "telephone": "+55-54-99618-6763", "priceRange": "R$ 10 a R$ 180", "sameAs": ["https://www.instagram.com/studioalenailss/"]}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink: #c84b70; --pink-light: #e07a95;
+      --bg: #fbf0f3; --card: #ffffff;
+      --border: #f4cbd6; --text: #333; --muted: #888;
+      --font: 'DM Sans', sans-serif;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 0 28px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(200,75,112,0.08);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar-left img { height: 40px; width: auto; }
+    .topbar-left h1 { font-family: 'Playfair Display', serif; color: var(--pink); font-size: 1.3rem; }
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+    .btn-site { text-decoration: none; color: var(--muted); font-size: .9rem; }
+    .btn-site:hover { color: var(--pink); }
+    .btn-sair {
+      background: none; border: 1.5px solid var(--border);
+      color: var(--muted); padding: 7px 16px; border-radius: 20px;
+      cursor: pointer; font-family: var(--font); font-size: .85rem; transition: .2s;
+    }
+    .btn-sair:hover { border-color: var(--pink); color: var(--pink); }
+
+    /* ── Layout ── */
+    .layout { display: flex; min-height: calc(100vh - 64px); }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 220px; background: white;
+      border-right: 1px solid var(--border);
+      padding: 24px 12px; flex-shrink: 0;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px; border-radius: 10px;
+      cursor: pointer; font-size: .92rem; color: var(--muted);
+      margin-bottom: 4px; transition: .15s; border: none;
+      background: none; width: 100%; text-align: left; font-family: var(--font);
+    }
+    .nav-item:hover { background: #fff0f7; color: var(--pink); }
+    .nav-item.ativo { background: #fff0f7; color: var(--pink); font-weight: 600; }
+    .nav-item .icon { font-size: 1.1rem; }
+
+    /* ── Main ── */
+    .main { flex: 1; min-width: 0; padding: 32px; overflow-y: auto; }
+
+    /* ── Seções ── */
+    .secao { display: none; }
+    .secao.ativa { display: block; }
+    .secao-titulo { font-family: 'Playfair Display', serif; color: var(--pink); font-size: 1.6rem; margin-bottom: 24px; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card); border-radius: 16px;
+      border: 1px solid var(--border); padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Serviços grid ── */
+    .servicos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 18px; }
+    .servico-card {
+      background: white; border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+    }
+    .servico-card img { width: 100%; height: 160px; object-fit: cover; display: block; }
+    .servico-body { padding: 16px; }
+    .servico-nome { font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
+    .servico-preco { color: var(--pink); font-weight: 600; font-size: .95rem; }
+    .servico-desc { color: var(--muted); font-size: .88rem; margin: 6px 0 12px; line-height: 1.5; }
+
+    /* ── Inputs ── */
+    label { font-size: .83rem; font-weight: 500; color: #555; display: block; margin-bottom: 4px; }
+    input[type=text], input[type=number], input[type=time], input[type=password],
+    textarea, select {
+      width: 100%; padding: 10px 12px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: .93rem; font-family: var(--font);
+      margin-bottom: 12px; outline: none; transition: border .2s;
+      background: white; color: var(--text);
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--pink); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* ── Botões ── */
+    .btn {
+      padding: 10px 20px; border-radius: 30px; border: none;
+      font-family: var(--font); font-size: .9rem; font-weight: 600;
+      cursor: pointer; transition: .2s;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, var(--pink), var(--pink-light));
+      color: white; box-shadow: 0 4px 14px rgba(200,75,112,.25);
+    }
+    .btn-primary:hover { transform: scale(1.03); }
+    .btn-ghost {
+      background: none; border: 1.5px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--pink); color: var(--pink); }
+    .btn-danger { background: #ffe8e8; color: #c62828; border: none; }
+    .btn-danger:hover { background: #ffcccc; }
+    .btn-sm { padding: 7px 14px; font-size: .82rem; }
+
+    /* ── Toggle ── */
+    .toggle-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .toggle {
+      width: 44px; height: 24px; background: #ddd;
+      border-radius: 12px; cursor: pointer; position: relative;
+      transition: background .2s; border: none;
+      flex-shrink: 0;
+    }
+    .toggle.on { background: var(--pink); }
+    .toggle::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px; background: white;
+      border-radius: 50%; transition: left .2s;
+    }
+    .toggle.on::after { left: 23px; }
+
+    /* ── Horários ── */
+    .dia-row {
+      display: grid; grid-template-columns: 120px 44px 1fr 1fr;
+      align-items: center; gap: 14px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .dia-row:last-child { border-bottom: none; }
+    .dia-nome { font-weight: 500; font-size: .95rem; }
+    .dia-row input[type=time] { margin-bottom: 0; }
+
+    /* ── Promoções ── */
+    .promo-card {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      background: white; border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px; margin-bottom: 12px;
+    }
+    .promo-info h3 { font-size: 1rem; color: var(--pink); margin-bottom: 4px; }
+    .promo-info p { font-size: .88rem; color: var(--muted); }
+    .promo-acoes { display: flex; gap: 8px; flex-shrink: 0; }
+
+    /* ── Upload foto ── */
+    .foto-upload {
+      border: 2px dashed var(--border); border-radius: 10px;
+      padding: 16px; text-align: center; cursor: pointer;
+      transition: border .2s; margin-bottom: 12px;
+    }
+    .foto-upload:hover { border-color: var(--pink); }
+    .foto-upload input { display: none; }
+    .foto-preview { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: #222; color: white; padding: 14px 22px;
+      border-radius: 12px; font-size: .9rem; z-index: 9999;
+      transform: translateY(80px); opacity: 0;
+      transition: .3s; pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #1b5e20; }
+    .toast.error { background: #b71c1c; }
+
+    /* ── Contato form ── */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+    /* ── Celular ───────────────────────────────────────── */
+    @media (max-width: 760px) {
+      /* Topo compacto */
+      .topbar { padding: 0 14px; height: 60px; }
+      .topbar-left { gap: 8px; min-width: 0; }
+      .topbar-left img { height: 34px; }
+      .topbar-left h1 { display: none; }
+      .topbar-right { gap: 8px; }
+      .btn-site { font-size: .85rem; white-space: nowrap; padding: 8px 4px; }
+      .btn-sair { padding: 8px 14px; }
+
+      /* Menu lateral vira barra de abas que rola de lado */
+      .layout { flex-direction: column; min-height: calc(100vh - 60px); }
+      .sidebar {
+        width: 100%; display: flex; gap: 6px;
+        padding: 10px 12px; overflow-x: auto;
+        border-right: none; border-bottom: 1px solid var(--border);
+        position: sticky; top: 60px; z-index: 90;
+        scrollbar-width: none;
+      }
+      .sidebar::-webkit-scrollbar { display: none; }
+      .nav-item {
+        width: auto; flex-shrink: 0; margin-bottom: 0;
+        padding: 10px 14px; border-radius: 999px; white-space: nowrap;
+        border: 1.5px solid var(--border);
+      }
+      .nav-item.ativo { border-color: var(--pink); }
+
+      /* Conteúdo em largura total */
+      .main { padding: 20px 14px 40px; }
+      .secao-titulo { font-size: 1.35rem; margin-bottom: 16px; }
+      .card { padding: 18px 16px; border-radius: 14px; }
+      .servicos-grid { grid-template-columns: 1fr; gap: 14px; }
+      .servico-card img { height: 190px; }
+
+      /* Campos com fonte 16px: evita o zoom automático do iPhone */
+      input[type=text], input[type=number], input[type=time], input[type=password], textarea, select {
+        font-size: 16px; padding: 12px;
+      }
+      .btn { padding: 12px 20px; }
+
+      /* Horários: nome do dia + botão em cima, horários embaixo */
+      .dia-row {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: "nome toggle" "abre fecha";
+        gap: 8px 12px; padding: 14px 0;
+      }
+      .dia-row > .dia-nome { grid-area: nome; align-self: center; }
+      .dia-row > .toggle { grid-area: toggle; justify-self: end; }
+      .dia-row > div:nth-of-type(1) { grid-area: abre; }
+      .dia-row > div:nth-of-type(2) { grid-area: fecha; }
+
+      /* Promoções: botões embaixo do texto */
+      .promo-card { flex-direction: column; gap: 12px; }
+      .promo-acoes { width: 100%; flex-wrap: wrap; }
+      .promo-acoes .btn { flex: 1; }
+
+      /* Janela de edição ocupa a tela, com botões fáceis de tocar */
+      #modal-servico { align-items: flex-end !important; }
+      .modal-box {
+        width: 100% !important; max-height: 92vh !important;
+        border-radius: 20px 20px 0 0 !important; padding: 22px 16px 28px !important;
+      }
+      .modal-acoes { flex-direction: column-reverse; }
+      .modal-acoes .btn { width: 100%; }
+
+      /* Aviso centralizado na parte de baixo */
+      .toast { left: 14px; right: 14px; bottom: 18px; text-align: center; }
+    }
+
+    @media (max-width: 380px) {
+      .btn-site .txt { display: none; }
+    }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <nav class="nav wrap" aria-label="Principal">
-      <a class="brand" href="/" aria-label="Studio Alessandra, página inicial">
-        <img src="/imagens/logo.png" alt="Studio Alessandra" width="160" height="52">
-      </a>
-      <button class="menu-btn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-      <ul class="nav-links" id="menu">
-        <li><a href="/">Início</a></li>
-        <li><a href="/servicos">Serviços</a></li>
-        <li><a href="/sobre">Sobre</a></li>
-        <li><a class="nav-cta" href="/agendamento">Agendar</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <div class="promo" hidden></div>
+<div class="topbar">
+  <div class="topbar-left">
+    <img src="/imagens/logo.png" alt="Studio Alessandra">
+    <h1>Painel Administrativo</h1>
+  </div>
+  <div class="topbar-right">
+    <a href="/" target="_blank" rel="noopener" class="btn-site" id="link-site">↗ <span class="txt">Ver site</span></a>
+    <button class="btn-sair" onclick="sair()">Sair</button>
+  </div>
+</div>
 
-  <main>
-    <section class="hero">
-      <div class="wrap">
-        <div>
-          <p class="status" data-status aria-live="polite"></p>
-          <h1>Unhas bonitas, fortes e do seu jeito</h1>
-          <p class="lead">Alongamento em gel, banho em gel, blindagem e nail art feitos com cuidado pela unha natural e produtos de qualidade.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="/agendamento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Agendar horário</a>
-            <a class="btn btn-outline" href="/servicos">Ver serviços e valores</a>
-          </div>
-        </div>
-        <div class="fan" aria-hidden="true">
-          <figure><img src="/imagens/Alongamento_em_gel_tips.jpeg" alt=""></figure>
-          <figure><img src="/imagens/Nail.jpeg" alt=""></figure>
-          <figure><img src="/imagens/esmaltacao_banho_em_gel.jpeg" alt=""></figure>
-        </div>
+<div class="layout">
+  <nav class="sidebar">
+    <button class="nav-item ativo" onclick="irPara('servicos', this)">
+      <span class="icon">💅</span> Serviços
+    </button>
+    <button class="nav-item" onclick="irPara('horarios', this)">
+      <span class="icon">⏰</span> Horários
+    </button>
+    <button class="nav-item" onclick="irPara('promocoes', this)">
+      <span class="icon">🌸</span> Promoções
+    </button>
+    <button class="nav-item" onclick="irPara('contato', this)">
+      <span class="icon">📱</span> Contato
+    </button>
+    <button class="nav-item" onclick="irPara('senha', this)">
+      <span class="icon">🔒</span> Senha
+    </button>
+  </nav>
+
+  <main class="main">
+
+    <!-- ── SERVIÇOS ── -->
+    <section class="secao ativa" id="sec-servicos">
+      <div class="secao-titulo">Gerenciar Serviços</div>
+      <div class="servicos-grid" id="lista-servicos">
+        <p style="color:#aaa">Carregando...</p>
       </div>
     </section>
 
-    <section class="section section-alt">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <h2>Serviços mais procurados</h2>
-            <p>Valores atualizados pelo próprio studio. Escolha um serviço e agende direto pelo WhatsApp.</p>
-          </div>
-          <a class="btn btn-outline" href="/servicos">Ver todos os serviços</a>
-        </div>
-        <div class="services" data-servicos="3">
-        <div class="service skeleton"><div class="service-photo"></div><div class="line"></div><div class="line short"></div></div>
-        <div class="service skeleton"><div class="service-photo"></div><div class="line"></div><div class="line short"></div></div>
-        <div class="service skeleton"><div class="service-photo"></div><div class="line"></div><div class="line short"></div></div>
-        </div>
-      </div>
-    </section>
+    <!-- ── Modal Editar Serviço ── -->
+    <div id="modal-servico" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center">
+      <div class="modal-box" style="background:white;border-radius:20px;padding:32px;width:min(94%,520px);max-height:90vh;overflow-y:auto">
+        <h2 style="font-family:'Playfair Display',serif;color:var(--pink);margin-bottom:20px">Editar Serviço</h2>
+        <input type="hidden" id="edit-id">
 
-    <section class="section">
-      <div class="wrap visit">
-        <div>
-          <h2>Atendimento com hora marcada</h2>
-          <p class="lead">Reserve seu horário pela agenda online ou chame no WhatsApp para tirar dúvidas antes de marcar.</p>
-          <div class="visit-actions">
-            <a class="btn btn-primary" data-link="agendamento" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Agenda online</a>
-            <a class="btn btn-whats" data-link="whatsapp" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35M12.05 21.5h-.01a9.5 9.5 0 0 1-4.84-1.33l-.35-.2-3.6.94.96-3.5-.23-.36a9.46 9.46 0 0 1-1.45-5.05c0-5.24 4.27-9.5 9.52-9.5 2.54 0 4.93 1 6.73 2.79a9.43 9.43 0 0 1 2.78 6.72c0 5.24-4.27 9.5-9.51 9.5m8.1-17.6A11.4 11.4 0 0 0 12.05.53C5.73.53.6 5.66.6 11.97c0 2.02.53 3.99 1.53 5.72L.5 23.67l6.13-1.6a11.43 11.43 0 0 0 5.42 1.38h.01c6.31 0 11.45-5.13 11.45-11.45 0-3.06-1.19-5.93-3.36-8.1"/></svg>WhatsApp</a>
-          </div>
-        </div>
-        <ul class="hours" data-horarios aria-label="Horários de atendimento"></ul>
-      </div>
-    </section>
-  </main>
+        <label>Nome do serviço</label>
+        <input type="text" id="edit-nome">
 
-  <footer class="site-footer">
-    <div class="wrap">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <img src="/imagens/logo.png" alt="Studio Alessandra" width="172" height="56">
-          <p>Alongamento, banho em gel, blindagem e nail art com hora marcada.</p>
+        <label>Preço (ex: 180,00)</label>
+        <input type="text" id="edit-preco">
+
+        <label>Descrição</label>
+        <textarea id="edit-desc" rows="4"></textarea>
+
+        <label>Foto atual</label>
+        <div class="foto-upload" onclick="document.getElementById('edit-foto-input').click()">
+          <img id="edit-foto-preview" class="foto-preview" src="" alt="">
+          <div style="font-size:.85rem;color:var(--muted)">Clique para trocar a foto</div>
+          <input type="file" id="edit-foto-input" accept="image/*" onchange="previewFoto(this)">
         </div>
-        <div>
-          <h3>Páginas</h3>
-          <ul class="footer-links">
-            <li><a href="/servicos">Serviços e valores</a></li>
-            <li><a href="/agendamento">Horários e agendamento</a></li>
-            <li><a href="/sobre">Sobre o studio</a></li>
-          </ul>
+
+        <div style="display:flex;gap:10px;margin-top:8px">
+          <label style="display:flex;align-items:center;gap:8px;margin:0">
+            <input type="checkbox" id="edit-ativo" style="width:auto;margin:0">
+            Serviço ativo (visível no site)
+          </label>
         </div>
-        <div>
-          <h3>Contato</h3>
-          <ul class="footer-links">
-            <li><a data-link="whatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a></li>
-            <li><a data-link="instagram" href="#" target="_blank" rel="noopener">Instagram</a></li>
-            <li><a data-link="agendamento" href="#" target="_blank" rel="noopener">Agenda online</a></li>
-          </ul>
+
+        <div class="modal-acoes" style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+          <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+          <button class="btn btn-primary" onclick="salvarServico()">Salvar alterações</button>
         </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© 2026 Studio Alessandra</span>
-        <span>Site por <a href="https://onemorecode.tech" target="_blank" rel="noopener">OneMoreCode</a></span>
       </div>
     </div>
-  </footer>
 
-  <a class="whats-float" data-link="whatsapp" href="#" target="_blank" rel="noopener" aria-label="Conversar no WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35M12.05 21.5h-.01a9.5 9.5 0 0 1-4.84-1.33l-.35-.2-3.6.94.96-3.5-.23-.36a9.46 9.46 0 0 1-1.45-5.05c0-5.24 4.27-9.5 9.52-9.5 2.54 0 4.93 1 6.73 2.79a9.43 9.43 0 0 1 2.78 6.72c0 5.24-4.27 9.5-9.51 9.5m8.1-17.6A11.4 11.4 0 0 0 12.05.53C5.73.53.6 5.66.6 11.97c0 2.02.53 3.99 1.53 5.72L.5 23.67l6.13-1.6a11.43 11.43 0 0 0 5.42 1.38h.01c6.31 0 11.45-5.13 11.45-11.45 0-3.06-1.19-5.93-3.36-8.1"/></svg></a>
+    <!-- ── HORÁRIOS ── -->
+    <section class="secao" id="sec-horarios">
+      <div class="secao-titulo">Horários de Atendimento</div>
+      <div class="card">
+        <div id="horarios-form"></div>
+        <button class="btn btn-primary" style="margin-top:16px" onclick="salvarHorarios()">Salvar horários</button>
+      </div>
+    </section>
 
-  <script src="/script.js" defer></script>
+    <!-- ── PROMOÇÕES ── -->
+    <section class="secao" id="sec-promocoes">
+      <div class="secao-titulo">Promoções</div>
+
+      <div class="card">
+        <p style="font-weight:600;margin-bottom:14px">Nova promoção</p>
+        <div class="form-row">
+          <div>
+            <label>Título</label>
+            <input type="text" id="promo-titulo" placeholder="Ex: Semana do Gel">
+          </div>
+          <div>
+            <label>Descrição curta</label>
+            <input type="text" id="promo-desc" placeholder="Ex: 20% de desconto no banho em gel">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="adicionarPromo()">Adicionar promoção</button>
+      </div>
+
+      <div id="lista-promocoes"></div>
+    </section>
+
+    <!-- ── CONTATO ── -->
+    <section class="secao" id="sec-contato">
+      <div class="secao-titulo">Informações de Contato</div>
+      <div class="card">
+        <label>Instagram (URL completa)</label>
+        <input type="text" id="c-instagram" placeholder="https://www.instagram.com/seu_perfil">
+
+        <label>WhatsApp (só números, com DDI: 5554999999999)</label>
+        <input type="text" id="c-whatsapp" placeholder="5554999999999">
+
+        <label>Link de agendamento</label>
+        <input type="text" id="c-agendamento" placeholder="https://link-do-agendamento.com">
+
+        <button class="btn btn-primary" onclick="salvarContato()">Salvar contato</button>
+      </div>
+    </section>
+
+    <!-- ── SENHA ── -->
+    <section class="secao" id="sec-senha">
+      <div class="secao-titulo">Alterar Senha</div>
+      <div class="card" style="max-width:400px">
+        <label>Senha atual</label>
+        <input type="password" id="senha-atual">
+        <label>Nova senha</label>
+        <input type="password" id="senha-nova">
+        <label>Confirmar nova senha</label>
+        <input type="password" id="senha-conf">
+        <button class="btn btn-primary" onclick="alterarSenha()">Alterar senha</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Endereços: no subdomínio admin.studioalenails.com.br usa /painel e /login ──
+const NO_SUBDOMINIO = location.hostname.startsWith('admin.');
+const LOGIN = NO_SUBDOMINIO ? '/login' : '/admin/login';
+if (NO_SUBDOMINIO) document.getElementById('link-site').href = 'https://www.' + location.hostname.replace(/^admin\./, '');
+
+// Chamada à API: se der erro, mostra a mensagem e interrompe a ação
+async function api(url, opcoes) {
+  let res;
+  try {
+    res = await fetch(url, opcoes);
+  } catch {
+    toast('Sem conexão. Verifique a internet e tente de novo.', 'error');
+    throw new Error('rede');
+  }
+  if (res.status === 401) { location.href = LOGIN; throw new Error('401'); }
+  if (!res.ok) {
+    let msg = 'Não foi possível salvar. Tente de novo.';
+    try { msg = (await res.json()).erro || msg; } catch {}
+    toast(msg, 'error');
+    throw new Error(msg);
+  }
+  return res;
+}
+
+// Reduz a foto no navegador antes de enviar (mais rápido e dentro do limite da Vercel)
+function comprimirImagem(arquivo, max = 1600, qualidade = 0.85) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const escala = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * escala);
+      canvas.height = Math.round(img.height * escala);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => resolve(blob || arquivo), 'image/jpeg', qualidade);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror = () => resolve(arquivo);
+    img.src = URL.createObjectURL(arquivo);
+  });
+}
+// ── Auth check ────────────────────────────────────────────
+fetch('/api/sessao').then(r => r.json()).then(d => {
+  if (!d.logado) location.href = LOGIN;
+  else carregarTudo();
+});
+
+function sair() {
+  fetch('/api/logout', { method: 'POST' }).then(() => location.href = LOGIN);
+}
+
+// ── Navegação ─────────────────────────────────────────────
+function irPara(secao, btn) {
+  document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('ativo'));
+  document.getElementById('sec-' + secao).classList.add('ativa');
+  btn.classList.add('ativo');
+}
+
+// ── Toast ─────────────────────────────────────────────────
+function toast(msg, tipo = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + tipo;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ── Carregar tudo ─────────────────────────────────────────
+function carregarTudo() {
+  carregarServicos();
+  carregarHorarios();
+  carregarPromocoes();
+  carregarContato();
+}
+
+// ── SERVIÇOS ──────────────────────────────────────────────
+let servicosData = [];
+
+async function carregarServicos() {
+  const res = await api('/api/admin/servicos');
+  servicosData = await res.json();
+  renderServicos();
+}
+
+function renderServicos() {
+  const container = document.getElementById('lista-servicos');
+  container.innerHTML = servicosData.map(s => `
+    <div class="servico-card">
+      <img src="${s.foto}" alt="${s.nome}" onerror="this.src='/imagens/logo.png'">
+      <div class="servico-body">
+        <div class="servico-nome">${s.nome}</div>
+        <div class="servico-preco">R$ ${s.preco}</div>
+        <div class="servico-desc">${s.descricao.substring(0,90)}...</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-primary btn-sm" onclick="abrirModal(${s.id})">✏️ Editar</button>
+          <span style="font-size:.8rem;color:${s.ativo ? '#2e7d32' : '#c62828'};font-weight:600">
+            ${s.ativo ? '● Ativo' : '○ Oculto'}
+          </span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function abrirModal(id) {
+  const s = servicosData.find(x => x.id === id);
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-nome').value = s.nome;
+  document.getElementById('edit-preco').value = s.preco;
+  document.getElementById('edit-desc').value = s.descricao;
+  document.getElementById('edit-ativo').checked = s.ativo;
+  document.getElementById('edit-foto-preview').src = s.foto;
+  document.getElementById('edit-foto-input').value = '';
+  document.getElementById('modal-servico').style.display = 'flex';
+}
+
+function fecharModal() {
+  document.getElementById('modal-servico').style.display = 'none';
+}
+
+function previewFoto(input) {
+  if (input.files && input.files[0]) {
+    document.getElementById('edit-foto-preview').src = URL.createObjectURL(input.files[0]);
+  }
+}
+
+async function salvarServico() {
+  const id = parseInt(document.getElementById('edit-id').value);
+  const dados = {
+    nome: document.getElementById('edit-nome').value.trim(),
+    preco: document.getElementById('edit-preco').value.trim(),
+    descricao: document.getElementById('edit-desc').value.trim(),
+    ativo: document.getElementById('edit-ativo').checked
+  };
+
+  // Salvar dados de texto
+  await api('/api/admin/servicos/' + id, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados)
+  });
+
+  // Upload de foto se selecionada
+  const fotoInput = document.getElementById('edit-foto-input');
+  if (fotoInput.files && fotoInput.files[0]) {
+    const form = new FormData();
+    const foto = await comprimirImagem(fotoInput.files[0]);
+    form.append('foto', foto, 'foto.jpg');
+    await api('/api/admin/servicos/' + id + '/foto', { method: 'POST', body: form });
+  }
+
+  fecharModal();
+  await carregarServicos();
+  toast('Serviço atualizado com sucesso! 💅');
+}
+
+// ── HORÁRIOS ──────────────────────────────────────────────
+const DIAS_LABEL = {
+  segunda:'Segunda-feira', terca:'Terça-feira', quarta:'Quarta-feira',
+  quinta:'Quinta-feira', sexta:'Sexta-feira', sabado:'Sábado', domingo:'Domingo'
+};
+
+async function carregarHorarios() {
+  const res = await api('/api/admin/horarios');
+  const h = await res.json();
+  const form = document.getElementById('horarios-form');
+  form.innerHTML = Object.entries(h).map(([dia, v]) => `
+    <div class="dia-row">
+      <span class="dia-nome">${DIAS_LABEL[dia]}</span>
+      <button type="button" class="toggle ${v.ativo ? 'on' : ''}" id="tog-${dia}"
+        onclick="toggleDia('${dia}')"></button>
+      <div>
+        <label style="font-size:.78rem">Abertura</label>
+        <input type="time" id="ab-${dia}" value="${v.abertura}" ${!v.ativo ? 'disabled' : ''}>
+      </div>
+      <div>
+        <label style="font-size:.78rem">Fechamento</label>
+        <input type="time" id="fe-${dia}" value="${v.fechamento}" ${!v.ativo ? 'disabled' : ''}>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleDia(dia) {
+  const tog = document.getElementById('tog-' + dia);
+  const on = tog.classList.toggle('on');
+  document.getElementById('ab-' + dia).disabled = !on;
+  document.getElementById('fe-' + dia).disabled = !on;
+}
+
+async function salvarHorarios() {
+  const dias = ['segunda','terca','quarta','quinta','sexta','sabado','domingo'];
+  const horarios = {};
+  dias.forEach(d => {
+    horarios[d] = {
+      ativo: document.getElementById('tog-' + d).classList.contains('on'),
+      abertura: document.getElementById('ab-' + d).value,
+      fechamento: document.getElementById('fe-' + d).value
+    };
+  });
+  await api('/api/admin/horarios', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(horarios)
+  });
+  toast('Horários salvos! ⏰');
+}
+
+// ── PROMOÇÕES ─────────────────────────────────────────────
+async function carregarPromocoes() {
+  const res = await api('/api/admin/promocoes');
+  const promos = await res.json();
+  renderPromocoes(promos);
+}
+
+function renderPromocoes(promos) {
+  const lista = document.getElementById('lista-promocoes');
+  if (!promos.length) {
+    lista.innerHTML = '<p style="color:#aaa;text-align:center;padding:20px">Nenhuma promoção cadastrada.</p>';
+    return;
+  }
+  lista.innerHTML = promos.map(p => `
+    <div class="promo-card">
+      <div class="promo-info">
+        <h3>${p.titulo}</h3>
+        <p>${p.descricao}</p>
+      </div>
+      <div class="promo-acoes">
+        <button class="btn btn-sm ${p.ativo ? 'btn-ghost' : 'btn-primary'}"
+          onclick="togglePromo(${p.id}, ${!p.ativo})">
+          ${p.ativo ? 'Pausar' : 'Ativar'}
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="excluirPromo(${p.id})">Excluir</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function adicionarPromo() {
+  const titulo = document.getElementById('promo-titulo').value.trim();
+  const descricao = document.getElementById('promo-desc').value.trim();
+  if (!titulo || !descricao) { toast('Preencha título e descrição', 'error'); return; }
+
+  const res = await api('/api/admin/promocoes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ titulo, descricao })
+  });
+  document.getElementById('promo-titulo').value = '';
+  document.getElementById('promo-desc').value = '';
+  await carregarPromocoes();
+  toast('Promoção adicionada! 🌸');
+}
+
+async function togglePromo(id, ativo) {
+  await api('/api/admin/promocoes/' + id, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ativo })
+  });
+  await carregarPromocoes();
+  toast(ativo ? 'Promoção ativada! 🌸' : 'Promoção pausada');
+}
+
+async function excluirPromo(id) {
+  if (!confirm('Excluir esta promoção?')) return;
+  await api('/api/admin/promocoes/' + id, { method: 'DELETE' });
+  await carregarPromocoes();
+  toast('Promoção excluída');
+}
+
+// ── CONTATO ───────────────────────────────────────────────
+async function carregarContato() {
+  const res = await api('/api/admin/contato');
+  const c = await res.json();
+  document.getElementById('c-instagram').value = c.instagram || '';
+  document.getElementById('c-whatsapp').value = c.whatsapp || '';
+  document.getElementById('c-agendamento').value = c.agendamento || '';
+}
+
+async function salvarContato() {
+  const contato = {
+    instagram: document.getElementById('c-instagram').value.trim(),
+    whatsapp: document.getElementById('c-whatsapp').value.trim(),
+    agendamento: document.getElementById('c-agendamento').value.trim()
+  };
+  await api('/api/admin/contato', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(contato)
+  });
+  toast('Contato salvo! 📱');
+}
+
+// ── SENHA ─────────────────────────────────────────────────
+async function alterarSenha() {
+  const senhaAtual = document.getElementById('senha-atual').value;
+  const novaSenha = document.getElementById('senha-nova').value;
+  const senhaConf = document.getElementById('senha-conf').value;
+
+  if (!senhaAtual || !novaSenha) { toast('Preencha todos os campos', 'error'); return; }
+  if (novaSenha !== senhaConf) { toast('As senhas não coincidem', 'error'); return; }
+  if (novaSenha.length < 6) { toast('A nova senha precisa ter no mínimo 6 caracteres', 'error'); return; }
+
+  const res = await fetch('/api/admin/senha', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ senhaAtual, novaSenha })
+  });
+
+  if (res.ok) {
+    toast('Senha alterada com sucesso! 🔒');
+    document.getElementById('senha-atual').value = '';
+    document.getElementById('senha-nova').value = '';
+    document.getElementById('senha-conf').value = '';
+  } else {
+    let msg = 'Senha atual incorreta';
+    try { msg = (await res.json()).erro || msg; } catch {}
+    toast(msg, 'error');
+  }
+}
+
+// ── Fechar modal clicando fora ────────────────────────────
+document.getElementById('modal-servico').addEventListener('click', function(e) {
+  if (e.target === this) fecharModal();
+});
+</script>
 </body>
 </html>

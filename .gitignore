@@ -9,3 +9,5 @@ npm-debug.log*
 
 # fotos enviadas pelo painel quando testado no computador
 public/imagens/servico_*
+.vercel
+.env*

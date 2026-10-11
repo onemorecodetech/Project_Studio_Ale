@@ -1,0 +1,9 @@
+# Arquivos que NUNCA devem ser enviados à Vercel num deploy pelo computador (vercel --prod)
+.env
+.env.*
+!.env.example
+!.env.local.example
+exemplos/
+node_modules/
+.next/
+# data/db.json é a base inicial do site e precisa ir no deploy
